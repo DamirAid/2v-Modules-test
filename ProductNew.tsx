@@ -58,32 +58,45 @@ const ProductList: FC<{}> = () => {
     <>
       {products?.length &&
         products.map((product) => {
+          const {
+            id,
+            name,
+            createdAt,
+            addedToCart,
+            description,
+            images,
+            shortDescription,
+            price,
+            attributes,
+          } = product;
+
           return (
-            <div key={product.id} className="product__wrapper">
+            <div key={id} className="product__wrapper">
               <div className="product__header">
                 <p>
-                  {product.name}
+                  {name}
                   <span className="product__date">
-                    {product.createdAt.toLocaleString()}
+                    {createdAt.toLocaleString()}
                   </span>
                 </p>
                 <Button onClick={() => addToCart(product)} type="button">
-                  {product.addedToCart ? "Buy again" : "Buy"}
+                  {addedToCart ? "Buy again" : "Buy"}
                 </Button>
               </div>
               <div className="product__body">
-                <p>{product.description}</p>
-                <p>{product.attributes}</p>
-                {product?.images?.length ?
-                  product.images.map((url: string, idx: number) => (
-                    <img key={idx} src={url} alt={product.name} />
-                  )) : ""}
+                <p>{description}</p>
+                <p>{attributes}</p>
+                {images?.length
+                  ? images.map((url: string, idx: number) => (
+                      <img key={idx} src={url} alt={name} />
+                    ))
+                  : ""}
               </div>
               <div className="product__footer">
-                <p>{product.shortDescription}</p>
-                {product.price}
+                <p>{shortDescription}</p>
+                {price}
                 <Button onClick={() => addToCart(product)} type="button">
-                  {product.addedToCart ? "Buy again" : "Buy"}
+                  {addedToCart ? "Buy again" : "Buy"}
                 </Button>
               </div>
             </div>
