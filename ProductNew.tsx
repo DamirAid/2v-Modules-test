@@ -74,10 +74,10 @@ const ProductList: FC<{}> = () => {
               <div className="product__body">
                 <p>{product.description}</p>
                 <p>{product.attributes}</p>
-                {product?.images?.length &&
+                {product?.images?.length ?
                   product.images.map((url: string, idx: number) => (
                     <img key={idx} src={url} alt={product.name} />
-                  ))}
+                  )) : ""}
               </div>
               <div className="product__footer">
                 <p>{product.shortDescription}</p>
