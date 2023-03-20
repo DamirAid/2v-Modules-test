@@ -12,15 +12,19 @@ interface ProductEntity {
   images: string[];
 }
 
-const ProductList: FC = () => {
+const ProductList: FC<{}> = () => {
   const [products, setProducts] = useState<ProductEntity[]>([]);
-
+  const [loading, setLoading] = useState<boolean>(false);
   const getProducts = useCallback(async () => {
     try {
+      setLoading(true);
       const data = await api("/products");
+      setLoading(false);
       setProducts(data);
-    } catch (e) {
-      throw new Error(e);
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        throw new Error(e.message);
+      }
     }
   }, [setProducts]);
 
@@ -39,45 +43,53 @@ const ProductList: FC = () => {
           updProduct.id === dataProduct.id ? dataProduct : updProduct
         );
         setProducts(updatedProducts);
-      } catch (e) {
-        throw new Error(e);
+      } catch (e: unknown) {
+        if (e instanceof Error) {
+          throw new Error(e.message);
+        }
       }
     },
     [products, setProducts]
   );
 
+  if (loading) return <div>Loading...</div>;
+
   return (
-    products?.length &&
-    products.map((product) => {
-      <div className="product__wrapper">
-        <div className="product__header">
-          <p>
-            {product.name}
-            <div className="product__date">
-              {product.createdAt.toLocaleString()}
+    <>
+      {products?.length &&
+        products.map((product) => {
+          return (
+            <div key={product.id} className="product__wrapper">
+              <div className="product__header">
+                <p>
+                  {product.name}
+                  <span className="product__date">
+                    {product.createdAt.toLocaleString()}
+                  </span>
+                </p>
+                <Button onClick={() => addToCart(product)} type="button">
+                  {product.addedToCart ? "Buy again" : "Buy"}
+                </Button>
+              </div>
+              <div className="product__body">
+                <p>{product.description}</p>
+                <p>{product.attributes}</p>
+                {product?.images?.length &&
+                  product.images.map((url: string, idx: number) => (
+                    <img key={idx} src={url} alt={product.name} />
+                  ))}
+              </div>
+              <div className="product__footer">
+                <p>{product.shortDescription}</p>
+                {product.price}
+                <Button onClick={() => addToCart(product)} type="button">
+                  {product.addedToCart ? "Buy again" : "Buy"}
+                </Button>
+              </div>
             </div>
-          </p>
-          <Button onClick={() => addToCart(product)} type="button">
-            {product.addedToCart ? "Buy again" : "Buy"}
-          </Button>
-        </div>
-        <div className="product__body">
-          <p>{product.description}</p>
-          <p>{product.attributes}</p>
-          {product?.images?.length &&
-            product.images.map((url: string, idx: number) => (
-              <img key={idx} src={url} alt={product.name} />
-            ))}
-        </div>
-        <div className="product__footer">
-          <p>{product.shortDescription}</p>
-          {product.price}
-          <Button onClick={() => addToCart(product)} type="button">
-            {product.addedToCart ? "Buy again" : "Buy"}
-          </Button>
-        </div>
-      </div>;
-    })
+          );
+        })}
+    </>
   );
 };
 
