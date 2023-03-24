@@ -79,7 +79,7 @@ const ProductList: FC<{}> = () => {
                     {createdAt.toLocaleString()}
                   </span>
                 </p>
-                <Button onClick={() => addToCart(product)} type="button">
+                <Button onClick={() => addToCart(product)}>
                   {addedToCart ? "Buy again" : "Buy"}
                 </Button>
               </div>
@@ -95,7 +95,7 @@ const ProductList: FC<{}> = () => {
               <div className="product__footer">
                 <p>{shortDescription}</p>
                 {price}
-                <Button onClick={() => addToCart(product)} type="button">
+                <Button onClick={() => addToCart(product)}>
                   {addedToCart ? "Buy again" : "Buy"}
                 </Button>
               </div>
